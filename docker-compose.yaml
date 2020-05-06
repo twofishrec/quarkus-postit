@@ -1,0 +1,34 @@
+  version: '2.4'
+
+  services:
+    quarkus-backend:
+      build: ./quarkus-backend
+      container_name: quarkus-backend
+      depends_on:
+        - mongodb
+      ports:
+        - '8080:8080'
+      environment:
+        username: user
+        password: password
+        admin_password: password
+        uri: mongodb://localhost
+    node-frontend:
+      container_name: node-frontend
+      build: ./node-frontend
+      depends_on:
+        - quarkus-backend
+      ports:
+        - '3000:3000'
+      environment:
+        FRONTEND_PORT: '3000'
+    mongodb:
+      container_name: mongodb
+      image: centos/mongodb-34-centos7
+      restart: always
+      mem_limit: 512M
+      environment:
+        MONGODB_USER: user
+        MONGODB_PASSWORD: password
+        MONGODB_DATABASE: sampledb
+        MONGODB_ADMIN_PASSWORD: password
